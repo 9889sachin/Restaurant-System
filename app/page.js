@@ -1,198 +1,150 @@
-"use client";
+import Link from "next/link";
+import { ArrowRight, Utensils, Zap, Clock, Star } from "lucide-react";
 
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-
-const ComplaintIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-  </svg>
+const FeatureCard = ({ icon: Icon, title, description }) => (
+  <div className="flex flex-col items-center text-center p-6 rounded-xl bg-white shadow-xl border-t-4 border-orange-500 transition duration-300 hover:scale-[1.02]">
+    <Icon className="w-10 h-10 text-orange-500 mb-4 p-1.5 bg-orange-50 rounded-full" />
+    <h3 className="text-xl font-bold text-gray-800 mb-2">{title}</h3>
+    <p className="text-gray-600">{description}</p>
+  </div>
 );
 
-const TrackIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-    <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-  </svg>
+const HighlightCard = ({ title, description, price, imageUrl }) => (
+  <div className="rounded-2xl overflow-hidden shadow-xl bg-white transform transition duration-300 hover:shadow-2xl hover:-translate-y-1">
+    <img
+      src={imageUrl}
+      alt={title}
+      className="w-full h-48 object-cover"
+    />
+    <div className="p-5">
+      <h4 className="text-xl font-bold text-gray-900">{title}</h4>
+      <p className="text-gray-500 my-2">{description}</p>
+      <div className="flex justify-between items-center mt-3">
+        <span className="text-2xl font-extrabold text-orange-600">{price}</span>
+        <Link
+          href="/menu"
+          className="text-sm font-semibold text-orange-600 hover:text-orange-700 flex items-center"
+        >
+          Order Now <ArrowRight className="w-4 h-4 ml-1" />
+        </Link>
+      </div>
+    </div>
+  </div>
 );
 
-const CommunicationIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a2 2 0 01-2-2V10a2 2 0 012-2h8z" />
-  </svg>
-);
-
-export default function Home() {
-  const router = useRouter();
-  const handleGetStarted = async () => {
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      router.push("/authPages/login");
-      return;
-    }
-
-    try {
-      const res = await fetch("/api/auth/me", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (!res.ok) {
-        router.push("/authPages/login");
-        return;
-      }
-
-      const data = await res.json();
-      const role = data.user.role;
-
-      if (role === "tenant") router.push("/dashboard/tenant");
-      else if (role === "landlord") router.push("/dashboard/landlord");
-      else router.push("/authPages/login");
-    } catch (err) {
-      console.error(err);
-      router.push("/authPages/login");
-    }
-  };
-
+export default function HomePageMainContent() {
   return (
-    <main className="bg-white text-gray-800 overflow-x-hidden">
-      <section className="relative pt-16 sm:pt-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            <div className="text-center lg:text-left order-2 lg:order-1">
-              <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-slate-900 tracking-tight">
-                Hassle-Free <span className="text-indigo-600">Rent Management</span> is Here
-              </h1>
-              <p className="mt-4 sm:mt-6 text-lg text-slate-600 max-w-xl mx-auto lg:mx-0">
-                A modern platform for tenants to raise maintenance requests and for landlords to manage properties with complete transparency and efficiency.
-              </p>
-              <div className="mt-8 flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
-                <button
-                  onClick={handleGetStarted}
-                  className="w-full sm:w-auto inline-block bg-indigo-600 text-white font-semibold px-8 py-3 rounded-xl shadow-lg hover:bg-indigo-700 transition duration-300 ease-in-out transform hover:scale-[1.02]"
-                >
-                  Get Started Free
-                </button>
-                <a
-                  href="#features"
-                  className="w-full sm:w-auto inline-block bg-white text-slate-700 font-semibold px-8 py-3 rounded-xl border border-slate-300 hover:bg-slate-100 transition duration-300 ease-in-out transform hover:scale-[1.02]"
-                >
-                  Learn More
-                </a>
-              </div>
-            </div>
-            
-            <div className="order-1 lg:order-2 w-full max-w-screen-md mx-auto">
-              <div className="rounded-2xl shadow-2xl overflow-hidden transform transition-transform duration-500 hover:scale-[1.01]">
-                <Image
-                  src="/hero.webp"
-                  alt="Property Management Dashboard"
-                  width={1200}
-                  height={600}
-                  className="w-full h-auto object-cover"
-                  quality={90}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section id="features" className="py-20 lg:py-32 bg-white">
+    <div className="min-h-screen bg-gray-50">
+
+      <section className="relative pt-24 pb-32 sm:pt-36 sm:pb-48 bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="max-w-2xl mx-auto">
-            <span className="inline-block px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-indigo-600 bg-indigo-50 rounded-full">Features</span>
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mt-3">Why Choose Our Platform?</h2>
-            <p className="mt-4 text-lg text-slate-600">Everything you need to streamline property maintenance and communication.</p>
-          </div>
+          <p className="text-lg font-semibold text-orange-600 uppercase tracking-wider mb-3">
+            Your Next Favorite Meal is Waiting 🍕
+          </p>
+          <h1 className="text-5xl md:text-7xl font-black text-gray-900 mb-6 leading-tight">
+            Seamless Ordering. <span className="text-orange-600">Delicious Results.</span>
+          </h1>
+          <p className="max-w-3xl mx-auto text-xl text-gray-600 mb-12">
+            Experience food delivery redefined. Quick, fresh, and tailored to your cravings—start your order now!
+          </p>
 
-          <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white p-8 rounded-xl shadow-lg border border-slate-100 hover:shadow-xl transition-shadow duration-300 hover:border-indigo-200">
-              <div className="bg-indigo-50 rounded-full h-16 w-16 flex items-center justify-center mx-auto shadow-md">
-                <ComplaintIcon />
-              </div>
-              <h3 className="font-bold text-xl text-slate-800 mt-6">Easy Complaint Submission</h3>
-              <p className="mt-3 text-slate-600">Tenants can quickly submit detailed maintenance complaints with images and descriptions in just a few clicks.</p>
-            </div>
-            
-            <div className="bg-white p-8 rounded-xl shadow-lg border border-slate-100 hover:shadow-xl transition-shadow duration-300 hover:border-indigo-200">
-              <div className="bg-indigo-50 rounded-full h-16 w-16 flex items-center justify-center mx-auto shadow-md">
-                <TrackIcon />
-              </div>
-              <h3 className="font-bold text-xl text-slate-800 mt-6">Real-Time Status Tracking</h3>
-              <p className="mt-3 text-slate-600">Landlords and tenants can track the status of complaints from "Pending" to "Resolved" with full visibility.</p>
-            </div>
-            
-            <div className="bg-white p-8 rounded-xl shadow-lg border border-slate-100 hover:shadow-xl transition-shadow duration-300 hover:border-indigo-200">
-              <div className="bg-indigo-50 rounded-full h-16 w-16 flex items-center justify-center mx-auto shadow-md">
-                <CommunicationIcon />
-              </div>
-              <h3 className="font-bold text-xl text-slate-800 mt-6">Seamless Communication</h3>
-              <p className="mt-3 text-slate-600">Built-in chat allows for direct and clear communication between landlords and tenants regarding specific issues.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-gradient-to-br from-indigo-600 to-purple-700">
-        <div className="max-w-4xl mx-auto text-center py-20 lg:py-28 px-4 sm:px-6">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-white leading-tight">Ready to Modernize Your Renting Experience?</h2>
-          <p className="mt-4 text-lg text-indigo-100 opacity-90">Sign up today and discover a smarter, more efficient way to manage property maintenance.</p>
-          <div className="mt-10">
-            <button
-              onClick={handleGetStarted}
-              className="inline-block bg-white text-indigo-600 font-bold px-10 py-4 rounded-full shadow-2xl hover:bg-gray-100 transition duration-300 ease-in-out transform hover:scale-[1.05] ring-4 ring-indigo-400/50"
+          <div className="flex justify-center space-x-6">
+            <Link
+              href="/menu"
+              className="inline-flex items-center justify-center rounded-xl bg-orange-600 px-10 py-4 text-lg font-semibold text-white shadow-xl hover:bg-orange-700 transition transform hover:-translate-y-1"
             >
-              Get Started Now
-            </button>
+              Start Your Order <ArrowRight className="w-5 h-5 ml-3" />
+            </Link>
+            <Link
+              href="/reservations"
+              className="hidden sm:inline-flex items-center justify-center rounded-xl border-2 border-orange-500 bg-white px-10 py-4 text-lg font-semibold text-orange-600 shadow-md hover:bg-orange-50 transition"
+            >
+              Book a Table
+            </Link>
           </div>
         </div>
       </section>
 
-      <section className="py-20 lg:py-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="max-w-2xl mx-auto">
-            <span className="inline-block px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-indigo-600 bg-indigo-200/50 rounded-full">Testimonials</span>
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mt-3">Trusted by Tenants and Landlords</h2>
-            <p className="mt-4 text-lg text-slate-600">Hear from our users about how our platform has simplified their property management.</p>
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-center text-gray-800 mb-4">
+            Why Dine With Us?
+          </h2>
+          <p className="text-lg text-center text-gray-600 mb-12">
+            We are committed to quality, speed, and unforgettable taste.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <FeatureCard
+              icon={Utensils}
+              title="Gourmet Quality"
+              description="Our meals are crafted by professional chefs using premium, market-fresh ingredients."
+            />
+            <FeatureCard
+              icon={Zap}
+              title="Real-Time Tracking"
+              description="Get instant updates and track your delivery driver from our kitchen to your door."
+            />
+            <FeatureCard
+              icon={Clock}
+              title="24/7 Support"
+              description="Our dedicated customer service team is always available to help with your order or questions."
+            />
           </div>
-          <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white p-6 rounded-xl shadow-xl border border-indigo-100/70 text-left">
-              <p className="text-4xl text-indigo-500 font-serif mb-4">“</p>
-              <p className="text-gray-700 italic">
-                "Repair requests used to take weeks. Now, I file a complaint with a photo and the landlord starts work the next day. The tracking feature is amazing for peace of mind!"
-              </p>
-              <div className="mt-6 pt-4 border-t border-gray-100">
-                <p className="font-semibold text-slate-800">Priya Sharma</p>
-                <p className="text-sm text-indigo-600">Tenant, Bangalore</p>
-              </div>
-            </div>
+        </div>
+      </section>
+      
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-800 mb-2">
+              Our Chef's Specials
+            </h2>
+            <p className="text-lg text-gray-600">
+              Highly rated and recommended by our loyal customers.
+            </p>
+          </div>
 
-            <div className="bg-white p-6 rounded-xl shadow-xl border border-indigo-100/70 text-left">
-              <p className="text-4xl text-indigo-500 font-serif mb-4">“</p>
-              <p className="text-gray-700 italic">
-                "Managing multiple properties was a nightmare of emails and phone calls. This platform centralizes everything. My response time has drastically improved, making my tenants happier."
-              </p>
-              <div className="mt-6 pt-4 border-t border-gray-100">
-                <p className="font-semibold text-slate-800">Rajesh Kumar</p>
-                <p className="text-sm text-indigo-600">Landlord, Mumbai</p>
-              </div>
-            </div>
-            
-            <div className="bg-white p-6 rounded-xl shadow-xl border border-indigo-100/70 text-left">
-              <p className="text-4xl text-indigo-500 font-serif mb-4">“</p>
-              <p className="text-gray-700 italic">
-                "The built-in chat is a game-changer. No more confusion over what needs to be fixed. It keeps a clean, professional record of all communication related to a specific issue."
-              </p>
-              <div className="mt-6 pt-4 border-t border-gray-100">
-                <p className="font-semibold text-slate-800">Aisha Singh</p>
-                <p className="text-sm text-indigo-600">Tenant & Landlord User</p>
-              </div>
-            </div>
-
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <HighlightCard
+              title="Truffle Mushroom Pizza"
+              description="A savory blend of wild mushrooms, truffle oil, and creamy mozzarella."
+              price="$18.99"
+              imageUrl="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_MlPb7hG0mdHH1P9zXQdbnqPG_RHBff_N3g&s" // Replace with actual image URL
+            />
+            <HighlightCard
+              title="Signature Burger"
+              description="200g patty, aged cheddar, caramelized onions, and our secret sauce."
+              price="$15.50"
+              imageUrl="https://assets.bwbx.io/images/users/iqjWHBFdfxIU/iSCMNgAaVTLM/v1/-1x-1.webp" // Replace with actual image URL
+            />
+            <HighlightCard
+              title="Classic Lasagna"
+              description="Layers of fresh pasta, rich Bolognese sauce, and a blend of Italian cheeses."
+              price="$16.99"
+              imageUrl="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVWLEostP3KWlE9x3cpfvFeakDgT--ldfleQ&s" // Replace with actual image URL
+            />
           </div>
         </div>
       </section>
 
-    </main>
+      <section className="py-16 bg-orange-600">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <Star className="w-12 h-12 text-white mx-auto mb-4" fill="white" />
+            <h2 className="text-3xl font-bold text-white mb-4">
+                Ready to Taste the Difference?
+            </h2>
+            <p className="text-xl text-orange-100 mb-8">
+                Join thousands of happy customers. Your next great meal is just a click away.
+            </p>
+            <Link
+              href="/menu"
+              className="inline-flex items-center justify-center rounded-xl bg-white px-10 py-4 text-lg font-semibold text-orange-600 shadow-2xl hover:bg-gray-100 transition"
+            >
+              Order Now & Get 10% Off
+            </Link>
+        </div>
+      </section>
+
+    </div>
   );
 }
